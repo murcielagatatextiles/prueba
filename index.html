@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Ciudadano/a Digital — Isla del Tesoro</title>
+
+  <!-- Open Graph: controla la imagen/título/descripción que muestran WhatsApp, Facebook, etc. al compartir el enlace -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Ciudadano/a Digital — Isla del Tesoro" />
+  <meta property="og:description" content="Embárcate en la Isla del Tesoro digital. Aprende a navegar el mundo digital con seguridad y respeto." />
+  <meta property="og:image" content="portada.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Ciudadano/a Digital — Isla del Tesoro" />
+  <meta name="twitter:description" content="Embárcate en la Isla del Tesoro digital. Aprende a navegar el mundo digital con seguridad y respeto." />
+  <meta name="twitter:image" content="portada.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ===================== INTRO SCREEN ===================== -->
+<section id="screen-intro" class="screen active">
+  <div class="intro-island">🏝️</div>
+  <h1>Ciudadano/a Digital</h1>
+  <p>Embárcate en la Isla del Tesoro digital. Recorre 5 zonas, supera los retos y aprende a navegar el mundo digital con seguridad y respeto.</p>
+  <button class="btn-main" onclick="showMap()">¡Comenzar aventura!</button>
+  <p style="color:rgba(255,255,255,0.4); font-size:0.8rem; margin-top:18px;">Para adolescentes · Ecuador · Ciudadanía Digital</p>
+
+  <div style="text-align:center; margin-top:26px;">
+    <p style="font-size:0.82rem; color:rgba(255,255,255,0.5); margin-bottom:14px">Invita a alguien a jugar</p>
+    <div class="share-icons-row">
+      <button class="share-icon-btn share-whatsapp" onclick="shareToWhatsapp('intro')" title="Compartir por WhatsApp" aria-label="Compartir por WhatsApp">
+        <img src="whatsapp.png" alt="WhatsApp" style="width:100%;height:100%;object-fit:cover">
+      </button>
+      <button class="share-icon-btn share-facebook" onclick="shareToFacebook('intro')" title="Compartir en Facebook" aria-label="Compartir en Facebook">
+        <img src="facebook.png" alt="Facebook" style="width:100%;height:100%;object-fit:cover">
+      </button>
+      <button class="share-icon-btn share-copy" onclick="shareCopyLink('intro')" title="Copiar enlace" aria-label="Copiar enlace">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/>
+          <path d="M14 11a5 5 0 0 0-7.07 0l-2.83 2.83a5 5 0 0 0 7.07 7.07L12.5 19.5"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== MAP SCREEN ===================== -->
+<section id="screen-map" class="screen">
+  <div class="map-header">
+    <h2>🗺️ Mapa de la Isla</h2>
+    <p>Completa las zonas para desbloquear el tesoro final</p>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="main-progress" style="width:0%"></div>
+    </div>
+    <button class="btn-reset-progress" onclick="confirmResetProgress()" title="Borrar el progreso guardado y empezar de cero">🔄 Reiniciar progreso</button>
+  </div>
+  <div class="island-map-wrap">
+    <div class="island-map" id="island-map">
+      <!-- Board SVG injected by JS -->
+    </div>
+    <div class="board-legend" id="zone-detail">
+      <p>Avanza zona por zona: completa una para desbloquear la siguiente 🔓</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== GAME SCREEN ===================== -->
+<section id="screen-game" class="screen">
+  <div class="game-header">
+    <button class="btn-back" onclick="showMap()">← Mapa</button>
+    <span class="zone-icon-lg" id="game-zone-icon"></span>
+    <h2 id="game-zone-title"></h2>
+    <div class="score-counter">⭐ <span id="live-score">0</span></div>
+  </div>
+  <div class="game-body" id="game-body">
+    <!-- Game content injected here -->
+  </div>
+</section>
+
+<!-- ===================== FINAL SCREEN ===================== -->
+<section id="screen-final" class="screen" style="background: linear-gradient(180deg, #062541 0%, #0d4d7a 60%, #1a6ea8 100%); padding: 24px 20px;">
+  <div style="max-width:640px; width:100%;">
+
+    <div style="text-align:center; margin-bottom:28px;">
+      <div class="chest-wrap" id="chest-wrap">
+        <div class="chest-glow"></div>
+        <span class="chest-mouth" id="chest-mouth"></span>
+        <svg class="chest-svg" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="100" cy="68" rx="62" ry="16" fill="#3a200c"/>
+          <rect x="22" y="70" width="156" height="58" rx="12" fill="#a9692f" stroke="#5c3414" stroke-width="4"/>
+          <rect x="22" y="92" width="156" height="13" fill="#e0b13e" stroke="#a9772a" stroke-width="2"/>
+          <rect x="91" y="88" width="18" height="22" rx="3" fill="#f4c430" stroke="#a9772a" stroke-width="2"/>
+          <g class="chest-lid-g">
+            <path d="M22,72 Q22,22 100,22 Q178,22 178,72 Z" fill="#c98a3e" stroke="#5c3414" stroke-width="4"/>
+            <rect x="85" y="44" width="30" height="11" rx="3" fill="#f4c430" stroke="#a9772a" stroke-width="2"/>
+          </g>
+        </svg>
+      </div>
+      <h1 style="color:var(--yellow); font-size:2.2rem; text-shadow:2px 2px 0 rgba(0,0,0,0.4)">¡Tesoro encontrado!</h1>
+      <p style="color:var(--ocean-light); font-size:1rem; max-width:440px; margin:10px auto; line-height:1.6">Completaste todos los desafíos. Ahora eres un/a <strong style="color:var(--yellow)">Ciudadano/a Digital</strong> preparado/a para navegar con seguridad y responsabilidad.</p>
+      <div class="final-stars" id="final-stars"></div>
+      <div class="cert-badge">
+        <p>Puntuación total</p>
+        <strong id="final-score-display">0 / 0 puntos</strong>
+      </div>
+    </div>
+
+    <!-- DATOS PROTEGIDOS POR LEY -->
+    <div style="background:rgba(255,255,255,0.07); border:1.5px solid rgba(255,255,255,0.2); border-radius:16px; padding:22px; margin-bottom:18px; text-align:center;">
+      <div style="font-size:2rem; margin-bottom:8px">🛡️</div>
+      <h2 style="color:var(--yellow); font-family:'Fredoka One',cursive; font-size:1.5rem; margin-bottom:8px">Tus datos están protegidos por ley</h2>
+      <p style="color:rgba(255,255,255,0.85); font-size:0.95rem; line-height:1.6">Tus datos personales no son un juego.<br>Existen leyes que los protegen y te dan derechos.</p>
+    </div>
+
+    <!-- PROTOCOLO -->
+    <div style="background:white; border-radius:16px; padding:22px; margin-bottom:18px;">
+      <h2 style="font-family:'Fredoka One',cursive; color:#0d4d7a; font-size:1.35rem; margin-bottom:6px">📋 Protocolo de Protección Digital</h2>
+      <p style="font-size:0.88rem; color:#666; margin-bottom:18px; font-style:italic">Si alguien usa tu información sin permiso, puedes actuar.</p>
+
+      <div style="display:flex; flex-direction:column; gap:14px;">
+
+        <div style="background:#fde8e6; border-left:4px solid #c0392b; border-radius:0 10px 10px 0; padding:14px 16px;">
+          <strong style="color:#c0392b; font-size:0.9rem">🛑 1. Protégete de inmediato</strong>
+          <p style="font-size:0.83rem; color:#555; margin:4px 0 8px; font-style:italic">Cambia contraseñas y ajusta tu privacidad.</p>
+          <ul style="font-size:0.83rem; color:#444; line-height:1.8; list-style:none; padding:0">
+            <li>🔑 Cambia claves (correo, redes, todo)</li>
+            <li>✅ Activa verificación en dos pasos</li>
+            <li>🚪 Cierra sesiones abiertas</li>
+          </ul>
+        </div>
+
+        <div style="background:#fef6dc; border-left:4px solid #f0b429; border-radius:0 10px 10px 0; padding:14px 16px;">
+          <strong style="color:#7a5500; font-size:0.9rem">📸 2. Guarda pruebas</strong>
+          <p style="font-size:0.83rem; color:#555; margin:4px 0 8px; font-style:italic">Toma capturas de lo ocurrido.</p>
+          <ul style="font-size:0.83rem; color:#444; line-height:1.8; list-style:none; padding:0">
+            <li>📱 Screenshots del contenido</li>
+            <li>🔗 Guarda los enlaces</li>
+            <li>📅 Anota las fechas</li>
+          </ul>
+          <p style="font-size:0.8rem; color:#7a5500; font-weight:700; margin-top:6px">👉 Esto es clave si vas a denunciar.</p>
+        </div>
+
+        <div style="background:#cce7f9; border-left:4px solid #1a6ea8; border-radius:0 10px 10px 0; padding:14px 16px;">
+          <strong style="color:#0d4d7a; font-size:0.9rem">🚫 3. Reporta en la plataforma</strong>
+          <p style="font-size:0.83rem; color:#555; margin:4px 0 8px; font-style:italic">Denuncia el contenido o la cuenta.</p>
+          <ul style="font-size:0.83rem; color:#444; line-height:1.8; list-style:none; padding:0">
+            <li>📲 Las redes sociales tienen botón de "reportar"</li>
+            <li>🗑️ Puedes pedir que eliminen el contenido</li>
+          </ul>
+        </div>
+
+        <div style="background:#d4edda; border-left:4px solid #3a8c4e; border-radius:0 10px 10px 0; padding:14px 16px;">
+          <strong style="color:#1a5c2e; font-size:0.9rem">⚖️ 4. Denuncia en Ecuador</strong>
+          <p style="font-size:0.83rem; color:#555; margin:4px 0 8px">Puedes acudir a:</p>
+          <ul style="font-size:0.83rem; color:#444; line-height:1.8; list-style:none; padding:0">
+            <li>🏛️ Autoridad de Protección de Datos Personales</li>
+            <li>🏛️ Defensoría del Pueblo</li>
+            <li>🏛️ Fiscalía General del Estado</li>
+          </ul>
+          <p style="font-size:0.8rem; color:#1a5c2e; font-weight:700; margin-top:6px">La ley te protege — Constitución Art. 66 y LOPDP.</p>
+        </div>
+
+        <div style="background:#ede4f7; border-left:4px solid #6c43b0; border-radius:0 10px 10px 0; padding:14px 16px;">
+          <strong style="color:#4a2d80; font-size:0.9rem">🧠 5. Busca apoyo</strong>
+          <p style="font-size:0.83rem; color:#555; margin:4px 0 8px; font-style:italic">No enfrentes esto solo/a.</p>
+          <ul style="font-size:0.83rem; color:#444; line-height:1.8; list-style:none; padding:0">
+            <li>👨‍👩‍👧 Familia</li>
+            <li>👩‍🏫 Profesores o DECE</li>
+            <li>🤝 Adultos de confianza</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MARCO LEGAL -->
+    <div style="background:white; border-radius:16px; padding:22px; margin-bottom:18px;">
+      <h2 style="font-family:'Fredoka One',cursive; color:#0d4d7a; font-size:1.35rem; margin-bottom:16px">📜 Marco Legal</h2>
+
+      <div style="margin-bottom:16px;">
+        <div style="background:#cce7f9; border-radius:8px; padding:10px 14px; margin-bottom:10px;">
+          <strong style="color:#0d4d7a; font-size:0.88rem">📘 Ley Orgánica de Protección de Datos Personales – Ecuador (2021)</strong>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="background:#f7f7f5; border-radius:8px; padding:10px 14px; font-size:0.85rem; line-height:1.5">
+            <strong style="color:#0d4d7a">Art. 1</strong> — Garantiza el derecho a la protección de datos personales.
+          </div>
+          <div style="background:#f7f7f5; border-radius:8px; padding:10px 14px; font-size:0.85rem; line-height:1.5">
+            <strong style="color:#0d4d7a">Art. 4</strong> — Define qué son los datos personales.
+          </div>
+          <div style="background:#f7f7f5; border-radius:8px; padding:10px 14px; font-size:0.85rem; line-height:1.5">
+            <strong style="color:#0d4d7a">Art. 10</strong> — Establece los principios de seguridad, confidencialidad y consentimiento.
+          </div>
+        </div>
+        <p style="font-size:0.82rem; color:#666; margin-top:8px; font-style:italic; text-align:center">Tus datos deben ser protegidos y usados con tu autorización.</p>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <div style="background:#d4edda; border-radius:8px; padding:10px 14px; margin-bottom:10px;">
+          <strong style="color:#1a5c2e; font-size:0.88rem">⚖️ Constitución de la República del Ecuador</strong>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="background:#f7f7f5; border-radius:8px; padding:10px 14px; font-size:0.85rem; line-height:1.5">
+            <strong style="color:#1a5c2e">Art. 66, numeral 19</strong> — Derecho a la protección de datos personales.
+          </div>
+          <div style="background:#f7f7f5; border-radius:8px; padding:10px 14px; font-size:0.85rem; line-height:1.5">
+            <strong style="color:#1a5c2e">Art. 66, numeral 20</strong> — Derecho a la intimidad personal y familiar.
+          </div>
+        </div>
+        <p style="font-size:0.82rem; color:#666; margin-top:8px; font-style:italic; text-align:center">Tienes derecho a la privacidad y al control de tu información.</p>
+      </div>
+
+      <div style="background:#ede4f7; border-radius:10px; padding:14px 16px; text-align:center;">
+        <strong style="color:#4a2d80; font-size:0.9rem">🌐 Tus derechos digitales en la práctica</strong>
+        <p style="font-size:0.88rem; color:#555; margin-top:6px; line-height:1.6">Puedes decidir <strong>qué compartir</strong>, <strong>con quién</strong> y <strong>cuándo</strong>.<br>Eres dueño/a de tu información digital.</p>
+      </div>
+    </div>
+
+    <!-- CRÉDITOS -->
+    <div style="background:rgba(255,255,255,0.07); border:1.5px solid rgba(255,255,255,0.2); border-radius:16px; padding:22px; margin-bottom:18px; text-align:center;">
+      <h2 style="color:var(--yellow); font-family:'Fredoka One',cursive; font-size:1.25rem; margin-bottom:16px">✨ Creado por</h2>
+      <div style="display:flex; flex-direction:column; gap:10px; max-width:340px; margin:0 auto;">
+        <div style="display:flex; justify-content:space-between; gap:12px; text-align:left; background:rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px;">
+          <span style="color:rgba(255,255,255,0.65); font-size:0.82rem;">Investigación y contenido pedagógico/legal</span>
+          <strong style="color:white; font-size:0.85rem; white-space:nowrap;">Erika Guaranda</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; gap:12px; text-align:left; background:rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px;">
+          <span style="color:rgba(255,255,255,0.65); font-size:0.82rem;">Diseño instruccional / pedagogía del juego</span>
+          <strong style="color:white; font-size:0.85rem; white-space:nowrap;">Eva Bonilla</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; gap:12px; text-align:left; background:rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px;">
+          <span style="color:rgba(255,255,255,0.65); font-size:0.82rem;">Programación / desarrollo</span>
+          <strong style="color:white; font-size:0.85rem; white-space:nowrap;">Andrea Vera</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; gap:12px; text-align:left; background:rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px;">
+          <span style="color:rgba(255,255,255,0.65); font-size:0.82rem;">Diseño visual / dirección de arte</span>
+          <strong style="color:white; font-size:0.85rem; white-space:nowrap;">Jonathan Borbor</strong>
+        </div>
+      </div>
+      <p style="color:rgba(255,255,255,0.55); font-size:0.8rem; margin-top:18px;">Universidad de las Artes — Educación Artística Intercultural — 2026</p>
+    </div>
+
+    <div style="text-align:center; padding-bottom:30px;">
+      <p style="font-size:0.82rem; color:rgba(255,255,255,0.5); margin-bottom:14px">Comparte este logro con tu familia y docentes</p>
+      <div class="share-icons-row">
+        <button class="share-icon-btn share-whatsapp" onclick="shareToWhatsapp('final')" title="Compartir por WhatsApp" aria-label="Compartir por WhatsApp">
+          <img src="whatsapp.png" alt="WhatsApp" style="width:100%;height:100%;object-fit:cover">
+        </button>
+        <button class="share-icon-btn share-facebook" onclick="shareToFacebook('final')" title="Compartir en Facebook" aria-label="Compartir en Facebook">
+          <img src="facebook.png" alt="Facebook" style="width:100%;height:100%;object-fit:cover">
+        </button>
+        <button class="share-icon-btn share-copy" onclick="shareCopyLink('final')" title="Copiar enlace" aria-label="Copiar enlace">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/>
+            <path d="M14 11a5 5 0 0 0-7.07 0l-2.83 2.83a5 5 0 0 0 7.07 7.07L12.5 19.5"/>
+          </svg>
+        </button>
+      </div>
+      <button class="btn-main" onclick="restartGame()" style="margin-top:18px">Jugar de nuevo</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== FEEDBACK OVERLAY ===================== -->
+<div class="feedback-overlay" id="feedback-overlay">
+  <div class="feedback-card">
+    <div class="feedback-header">
+      <span class="feedback-icon" id="fb-icon"></span>
+      <span class="feedback-title" id="fb-title"></span>
+    </div>
+    <div class="feedback-article" id="fb-article"></div>
+    <p class="feedback-explanation" id="fb-explanation"></p>
+    <button class="btn-continue" onclick="closeFeedback()">Continuar →</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

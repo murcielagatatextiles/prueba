@@ -1,0 +1,760 @@
+    :root {
+      --ocean: #1a6ea8;
+      --ocean-dark: #0d4d7a;
+      --ocean-light: #cce7f9;
+      --sand: #f5e6c3;
+      --sand-dark: #dbc98a;
+      --green: #3a8c4e;
+      --green-light: #d4edda;
+      --coral: #e05a2b;
+      --coral-light: #fce8df;
+      --yellow: #f0b429;
+      --yellow-light: #fef6dc;
+      --purple: #6c43b0;
+      --purple-light: #ede4f7;
+      --red: #c0392b;
+      --red-light: #fde8e6;
+      --white: #ffffff;
+      --gray-100: #f7f7f5;
+      --gray-200: #ededea;
+      --gray-600: #6b6b68;
+      --gray-800: #2c2c2a;
+      --radius: 14px;
+      --shadow: 0 4px 18px rgba(0,0,0,0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(180deg, #0a3d62 0%, #1a6ea8 40%, #1e8bc3 100%);
+      min-height: 100vh;
+      min-height: calc(var(--vh, 1vh) * 100);
+      min-height: 100dvh;
+      color: var(--gray-800);
+      -webkit-tap-highlight-color: transparent;
+    }
+    h1, h2, h3, .display { font-family: 'Fredoka One', cursive; }
+    img { max-width: 100%; }
+    /* Excepción: la Zona 2 (Semáforo) usa una sola imagen de 3 paneles
+       puesta al 300% de ancho y desplazada con left para recortar solo
+       el panel correspondiente en cada tarjeta. La regla de arriba
+       rompía ese recorte, así que aquí se restaura su ancho real. */
+    .sem2-img-wrap img { max-width: none; }
+
+    /* ====== SCREENS ====== */
+    .screen {
+      display: none;
+      min-height: 100vh;
+      min-height: calc(var(--vh, 1vh) * 100);
+      min-height: 100dvh;
+    }
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+      width: 100%;
+    }
+
+    /* ====== INTRO ====== */
+    #screen-intro {
+      background: linear-gradient(180deg, #062541 0%, #0d4d7a 40%, #1a6ea8 100%);
+      justify-content: center;
+      text-align: center;
+    }
+    .intro-island { font-size: 100px; margin-bottom: 10px; }
+    #screen-intro h1 { color: var(--yellow); font-size: 2.8rem; text-shadow: 3px 3px 0 rgba(0,0,0,0.4); }
+    #screen-intro p { color: var(--ocean-light); font-size: 1.05rem; max-width: 480px; margin: 12px auto 28px; line-height: 1.6; }
+    .btn-main {
+      background: var(--yellow);
+      color: var(--gray-800);
+      border: none;
+      border-radius: 40px;
+      padding: 14px 36px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.3rem;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #c49020, 0 6px 20px rgba(0,0,0,0.25);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .btn-main:hover { transform: translateY(-2px); }
+    .btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #c49020; }
+
+    /* ====== MAP ====== */
+    #screen-map { background: linear-gradient(180deg, #0a3d62 0%, #1571a8 100%); }
+    .map-header { text-align: center; margin-bottom: 24px; }
+    .map-header h2 { color: var(--yellow); font-size: 2rem; }
+    .map-header p { color: var(--ocean-light); font-size: 0.95rem; }
+    .progress-bar-wrap { background: rgba(255,255,255,0.2); border-radius: 40px; height: 12px; width: 260px; margin: 10px auto 0; overflow: hidden; }
+    .progress-bar { height: 100%; background: var(--yellow); border-radius: 40px; transition: width 0.5s ease; }
+    .btn-reset-progress { display: inline-block; margin-top: 14px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.85); font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; cursor: pointer; transition: background 0.2s ease; }
+    .btn-reset-progress:hover { background: rgba(255,255,255,0.22); }
+
+    .island-map-wrap {
+      width: 100%;
+      max-width: 760px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 3px solid rgba(255,255,255,0.2);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+    .island-map {
+      position: relative;
+      width: 100%;
+      display: block;
+    }
+    .map-img-wrap { position: relative; display: block; width: 100%; }
+    .map-overlay-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+    /* Nodo de zona sobre el tablero */
+    .board-node { cursor: pointer; }
+    .board-node.locked { cursor: not-allowed; }
+    .board-node-circle {
+      fill: var(--white);
+      stroke: rgba(0,0,0,0.15);
+      stroke-width: 2;
+      transition: transform 0.15s ease, filter 0.15s ease;
+      transform-origin: center;
+    }
+    .board-node:hover:not(.locked) .board-node-circle { transform: scale(1.08); filter: brightness(1.05); }
+    .board-node.locked .board-node-circle { fill: rgba(255,255,255,0.55); }
+    .board-node.completed .board-node-circle { stroke: var(--yellow); stroke-width: 4; }
+    .board-node-icon { font-size: 1.7rem; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+    .board-node.locked .board-node-icon { opacity: 0.45; }
+    .board-node-badge {
+      font-size: 0.78rem;
+      text-anchor: middle;
+      dominant-baseline: central;
+      pointer-events: none;
+    }
+    .board-node-badge-bg { stroke: white; stroke-width: 2; }
+    .board-node-check-bg { fill: #27ae60; }
+    .board-node-lock-bg { fill: rgba(0,0,0,0.25); }
+    .board-node-label {
+      font-family: 'Fredoka One', cursive;
+      font-size: 0.8rem;
+      text-anchor: middle;
+      fill: var(--white);
+      paint-order: stroke;
+      stroke: rgba(0,0,0,0.55);
+      stroke-width: 4px;
+      pointer-events: none;
+    }
+    .board-start-label {
+      font-family: 'Fredoka One', cursive;
+      font-size: 0.95rem;
+      text-anchor: middle;
+      fill: #1a2e1a;
+    }
+    .board-legend {
+      background: #0d4d7a;
+      padding: 10px 16px 14px;
+      text-align: center;
+      min-height: 20px;
+    }
+    .board-legend p { color: rgba(255,255,255,0.65); font-size: 0.78rem; margin: 0; }
+    .stars-earned { color: var(--yellow); font-size: 0.85rem; }
+
+    /* ====== GAME SHELL ====== */
+    #screen-game {
+      background: linear-gradient(180deg, #062541 0%, #0d4d7a 40%, #1a6ea8 100%);
+      padding: 0;
+    }
+    .game-header {
+      background: var(--ocean-dark);
+      color: white;
+      padding: 14px 20px;
+      padding-top: max(14px, env(safe-area-inset-top));
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .game-header h2 { font-size: 1.15rem; flex: 1; min-width: 140px; }
+    .btn-back {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      border-radius: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .btn-back:hover { background: rgba(255,255,255,0.25); }
+    .zone-icon-lg { font-size: 1.8rem; }
+    .game-body { padding: 20px; width: 100%; max-width: 680px; margin: 0 auto; }
+
+    /* ====== GENERIC GAME ELEMENTS ====== */
+    .question-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+    .question-number { font-size: 0.75rem; font-weight: 700; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .question-text { font-size: 1.05rem; font-weight: 700; line-height: 1.45; color: var(--gray-800); }
+    .options-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+    .option-btn {
+      background: var(--gray-100);
+      border: 2px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 12px 16px;
+      text-align: left;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.15s;
+      color: var(--gray-800);
+    }
+    .option-btn:hover:not(:disabled) { border-color: var(--ocean); background: var(--ocean-light); }
+    .option-btn.correct { background: var(--green-light); border-color: var(--green); color: #1a5c2e; }
+    .option-btn.wrong { background: var(--red-light); border-color: var(--red); color: var(--red); }
+    .option-btn:disabled { cursor: not-allowed; }
+
+    /* ====== FEEDBACK TOAST ====== */
+    .feedback-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 200;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 24px;
+    }
+    .feedback-overlay.show { display: flex; }
+    .feedback-card {
+      background: white;
+      border-radius: 20px;
+      padding: 22px 24px;
+      max-width: 500px;
+      width: 100%;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(60px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .feedback-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .feedback-icon { font-size: 2rem; }
+    .feedback-title { font-family: 'Fredoka One', cursive; font-size: 1.3rem; }
+    .feedback-title.correct { color: var(--green); }
+    .feedback-title.wrong { color: var(--red); }
+    .feedback-article {
+      background: var(--yellow-light);
+      border-left: 4px solid var(--yellow);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .feedback-article strong { display: block; margin-bottom: 3px; color: #7a5500; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .feedback-explanation { font-size: 0.92rem; line-height: 1.55; color: var(--gray-600); margin-bottom: 16px; }
+    .btn-continue {
+      width: 100%;
+      background: var(--ocean);
+      color: white;
+      border: none;
+      border-radius: 40px;
+      padding: 13px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-continue:hover { background: var(--ocean-dark); }
+
+    /* ====== PROTOCOL SCREEN ====== */
+    .protocol-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+    .protocol-card h3 { font-family: 'Fredoka One', cursive; font-size: 1.3rem; color: var(--ocean-dark); margin-bottom: 6px; }
+    .protocol-card p { font-size: 0.9rem; color: var(--gray-600); line-height: 1.55; margin-bottom: 12px; }
+    .protocol-steps { list-style: none; counter-reset: step; }
+    .protocol-steps li {
+      counter-increment: step;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .protocol-steps li::before {
+      content: counter(step);
+      background: var(--ocean);
+      color: white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .contact-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .chip {
+      background: var(--ocean-light);
+      color: var(--ocean-dark);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .zone-complete-banner {
+      background: linear-gradient(135deg, var(--green), #1d8c40);
+      color: white;
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .zone-complete-banner h2 { font-size: 1.6rem; margin-bottom: 4px; }
+    .zone-complete-banner p { opacity: 0.9; font-size: 0.9rem; }
+    .score-display { font-size: 2rem; font-family: 'Fredoka One', cursive; margin: 8px 0; }
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid var(--ocean);
+      color: var(--ocean);
+      border-radius: 40px;
+      padding: 11px 28px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin: 4px;
+    }
+    .btn-secondary:hover { background: var(--ocean); color: white; }
+
+    /* ====== MEMORY GAME ====== */
+    /* Nota: en móvil usamos 3 columnas (no 4) y tarjetas rectangulares
+       (no cuadradas) porque varios textos de esta zona son largos
+       (p. ej. "Descargar apps de sitios no oficiales", ~38 caracteres).
+       Con 4 columnas cuadradas ese texto no cabe en ningún tamaño de
+       letra razonable. Con menos columnas y más alto, sí entra completo
+       y se puede leer para emparejar. */
+    .memory-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 16px 0;
+    }
+    .mem-card {
+      position: relative;
+      min-height: 118px;
+      border-radius: 10px;
+      cursor: pointer;
+      background: var(--ocean);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      transition: transform 0.3s;
+      transform-style: preserve-3d;
+      border: 3px solid rgba(255,255,255,0.3);
+    }
+    .mem-card.flipped { transform: rotateY(180deg); }
+    .mem-card-front, .mem-card-back {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .mem-card-front { background: var(--ocean); color: white; font-size: 1.4rem; }
+    /* Zona 1: contenedor de tarjetas sobre fondo pergamino */
+    .mem-board-bg {
+      background: url('imagena.png') center center / cover no-repeat;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .mem-card-back {
+      background: var(--yellow-light);
+      transform: rotateY(180deg);
+      flex-direction: column;
+      gap: 3px;
+      padding: 6px 5px;
+      text-align: center;
+    }
+    .mem-card-icon {
+      font-size: clamp(1.05rem, 5vw, 2rem);
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .mem-card-text {
+      font-size: clamp(0.62rem, 2.6vw, 0.8rem);
+      line-height: 1.2;
+      color: var(--ocean-dark);
+      font-weight: 700;
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-break: break-word;
+      hyphens: auto;
+    }
+    .mem-card.matched .mem-card-front { background: var(--green-light); }
+    .mem-instructions {
+      background: var(--ocean-light);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+      color: var(--ocean-dark);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    .mem-pair-label {
+      background: white;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      border: 1.5px solid var(--ocean-light);
+    }
+    .mem-pair-label strong { color: var(--ocean-dark); }
+
+    /* ====== SEMÁFORO GAME ====== */
+    .semaforo-scenario {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+    .scenario-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--gray-600); margin-bottom: 8px; }
+    .scenario-text { font-size: 1rem; font-weight: 700; line-height: 1.45; margin-bottom: 16px; }
+    .semaforo-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .sem-btn {
+      flex: 1;
+      min-width: 100px;
+      padding: 16px 10px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.15s;
+    }
+    .sem-btn:hover { transform: scale(1.04); }
+    .sem-verde { background: #27ae60; color: white; }
+    .sem-amarillo { background: var(--yellow); color: #5a3a00; }
+    .sem-rojo { background: var(--red); color: white; }
+    .sem-label { font-size: 0.8rem; font-weight: 600; font-family: 'Nunito', sans-serif; }
+
+    /* ====== TRUE/FALSE GAME ====== */
+    .tf-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .tf-claim { font-size: 1.1rem; font-weight: 700; line-height: 1.45; margin: 12px 0 20px; padding: 0 8px; }
+    .tf-btns { display: flex; gap: 12px; justify-content: center; }
+    .tf-btn {
+      flex: 1;
+      max-width: 140px;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+    }
+    .tf-btn:hover { transform: translateY(-2px); }
+    .tf-true { background: var(--green); color: white; }
+    .tf-false { background: var(--red); color: white; }
+
+    /* ====== DRAG AND DROP ====== */
+    .dnd-container { display: flex; flex-direction: column; gap: 16px; }
+    .dnd-items-pool {
+      background: white;
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+    .dnd-items-pool h3 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--gray-600); margin-bottom: 12px; }
+    .dnd-items { display: flex; flex-wrap: wrap; gap: 8px; min-height: 50px; }
+    .dnd-item {
+      background: var(--ocean-light);
+      color: var(--ocean-dark);
+      border: 2px solid var(--ocean);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: grab;
+      user-select: none;
+      transition: opacity 0.15s;
+    }
+    .dnd-item:active { cursor: grabbing; opacity: 0.6; }
+    .dnd-item.dragging { opacity: 0.4; }
+    .dnd-categories { display: flex; flex-direction: column; gap: 12px; }
+    .dnd-category {
+      background: white;
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      border: 2px dashed var(--gray-200);
+      transition: border-color 0.15s;
+      min-height: 80px;
+    }
+    .dnd-category.drag-over { border-color: var(--ocean); background: var(--ocean-light); }
+    .dnd-category h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 10px; }
+    .dnd-category .dnd-items { min-height: 40px; }
+    .dnd-category-label { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 8px; }
+    .cat-derecho { background: var(--ocean-light); color: var(--ocean-dark); }
+    .cat-vulneracion { background: var(--red-light); color: var(--red); }
+    .cat-proteccion { background: var(--green-light); color: var(--green); }
+    .dnd-check-btn {
+      background: var(--ocean);
+      color: white;
+      border: none;
+      border-radius: 40px;
+      padding: 13px 28px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-top: 8px;
+    }
+    .dnd-check-btn:hover { background: var(--ocean-dark); }
+
+    /* ====== FINAL CHALLENGE ====== */
+    .dilemma-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+    .dilemma-icon { font-size: 2.5rem; text-align: center; margin-bottom: 10px; }
+    .dilemma-situation {
+      background: var(--gray-100);
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 0.93rem;
+      line-height: 1.55;
+      margin-bottom: 16px;
+    }
+    .dilemma-question { font-size: 1rem; font-weight: 700; margin-bottom: 14px; }
+    .dilemma-options { display: flex; flex-direction: column; gap: 8px; }
+    .dilemma-opt {
+      background: var(--gray-100);
+      border: 2px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 12px 16px;
+      text-align: left;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.15s;
+      color: var(--gray-800);
+    }
+    .dilemma-opt:hover:not(:disabled) { border-color: var(--ocean); background: var(--ocean-light); }
+    .dilemma-opt.best { background: var(--green-light); border-color: var(--green); color: #1a5c2e; }
+    .dilemma-opt.ok { background: var(--yellow-light); border-color: var(--yellow); color: #6b4400; }
+    .dilemma-opt.risky { background: var(--red-light); border-color: var(--red); color: var(--red); }
+
+    /* ====== FINAL SCREEN ====== */
+    #screen-final {
+      background: linear-gradient(180deg, #062541 0%, #0d4d7a 60%, #1a6ea8 100%);
+      justify-content: center;
+      text-align: center;
+    }
+    .chest-wrap { position: relative; width: 190px; max-width: 70vw; height: 130px; margin: 0 auto 8px; }
+    .chest-mouth { position: absolute; left: 50%; top: 38%; width: 1px; height: 1px; }
+    .chest-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .chest-lid-g { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 0.6s cubic-bezier(.34,1.7,.5,1); }
+    .chest-wrap.opened .chest-lid-g { transform: translateY(-34px) rotate(-22deg); }
+    .chest-glow { position: absolute; left: 50%; top: 40%; width: 14px; height: 14px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,224,102,0.95) 0%, rgba(255,224,102,0) 70%);
+      transform: translate(-50%,-50%) scale(0); opacity: 0; }
+    .chest-wrap.opened .chest-glow { animation: chestGlow 1s ease-out 0.25s forwards; }
+    @keyframes chestGlow {
+      0% { transform: translate(-50%,-50%) scale(0); opacity: 0; }
+      35% { transform: translate(-50%,-50%) scale(13); opacity: 0.85; }
+      100% { transform: translate(-50%,-50%) scale(17); opacity: 0; }
+    }
+    .star-slot { display: inline-block; font-size: 2.5rem; }
+    .flying-star { position: fixed; font-size: 2.5rem; left: 0; top: 0; z-index: 999;
+      transform: translate(-50%,-50%) scale(0.3); opacity: 0;
+      transition: left 0.7s cubic-bezier(.22,1.1,.4,1), top 0.7s cubic-bezier(.22,1.1,.4,1),
+                  transform 0.7s cubic-bezier(.22,1.1,.4,1), opacity 0.25s ease-out;
+      pointer-events: none; }
+    .flying-star.launched { opacity: 1; transform: translate(-50%,-50%) scale(1.3) rotate(18deg); }
+    .flying-star.landed { transform: translate(-50%,-50%) scale(1) rotate(0deg); }
+    #screen-final h1 { color: var(--yellow); font-size: 2.4rem; text-shadow: 2px 2px 0 rgba(0,0,0,0.4); }
+    #screen-final p { color: var(--ocean-light); font-size: 1rem; max-width: 460px; margin: 12px auto 10px; line-height: 1.6; }
+    .final-stars { display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 3rem; margin: 12px 0;
+      opacity: 0; transform: scale(0.85); transition: opacity 0.3s ease, transform 0.3s ease; }
+    .final-stars.revealed { opacity: 1; transform: scale(1); }
+    .cert-badge {
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 16px;
+      padding: 16px 24px;
+      display: inline-block;
+      margin: 16px auto;
+    }
+    .cert-badge p { font-size: 0.85rem; color: rgba(255,255,255,0.7); margin: 0; }
+    .cert-badge strong { color: var(--yellow); font-size: 1rem; }
+
+    /* Score counter */
+    .score-counter { background: rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 12px; font-size: 0.85rem; color: white; font-weight: 700; }
+
+    /* ====== SHARE BUTTONS (pantalla final) ====== */
+    .share-icons-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .share-icon-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+      transition: transform 0.15s ease;
+      overflow: hidden;
+      padding: 0;
+    }
+    .share-icon-btn:hover { transform: translateY(-2px); }
+    .share-icon-btn:active { transform: translateY(1px); }
+    .share-whatsapp { background: #25d366; }
+    .share-facebook { background: #1877f2; }
+    .share-copy { background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.35); }
+
+    /* ========================================================
+       RESPONSIVE
+       Mobile-first de base; aquí afinamos para pantallas
+       muy pequeñas, móviles en horizontal, tablets y PC.
+    ======================================================== */
+
+    /* ---- Móviles pequeños (≤ 480px) ---- */
+    @media (max-width: 480px) {
+      .memory-grid { gap: 7px; }
+      .mem-card { min-height: 108px; }
+      .mem-board-bg { padding: 12px; }
+      .semaforo-btns { flex-direction: column; }
+      .sem-btn { flex-direction: row; justify-content: center; padding: 12px 16px; }
+      .tf-btns { gap: 8px; }
+      .tf-btn { max-width: none; padding: 12px; font-size: 1rem; }
+      .dilemma-icon { font-size: 2rem; }
+    }
+
+    /* ---- Móviles muy pequeños / gama baja (≤ 360px) ---- */
+    @media (max-width: 360px) {
+      #screen-intro h1 { font-size: 2.2rem; }
+      .intro-island { font-size: 72px; }
+      .btn-main { padding: 12px 26px; font-size: 1.1rem; }
+      .question-card, .tf-card, .dilemma-card, .protocol-card, .semaforo-scenario { padding: 16px 14px; }
+      .memory-grid { gap: 5px; }
+      .mem-card { min-height: 100px; }
+      .mem-board-bg { padding: 10px; }
+      .game-header { padding: 10px 14px; gap: 10px; }
+      .zone-icon-lg { font-size: 1.5rem; }
+    }
+
+    /* ---- Móviles en orientación horizontal (poca altura) ---- */
+    @media (max-height: 480px) and (orientation: landscape) {
+      .screen.active { justify-content: flex-start; padding-top: 12px; padding-bottom: 12px; }
+      .intro-island { font-size: 56px; margin-bottom: 4px; }
+      #screen-intro h1 { font-size: 1.9rem; }
+      #screen-intro p { margin: 8px auto 16px; }
+      .map-header { margin-bottom: 12px; }
+      .chest-wrap { width: 130px; height: 90px; }
+      #screen-final h1 { font-size: 1.7rem; }
+      .final-stars { min-height: 2rem; margin: 6px 0; }
+    }
+
+    /* ---- Tablets (601px – 900px) ---- */
+    @media (min-width: 601px) {
+      .screen.active { padding: 28px 32px; }
+      .game-body { max-width: 720px; }
+      .island-map-wrap { max-width: 820px; }
+      #screen-intro h1 { font-size: 3.1rem; }
+      #screen-intro p { font-size: 1.15rem; max-width: 560px; }
+      .question-text { font-size: 1.15rem; }
+      .options-grid { gap: 12px; }
+      .option-btn, .dilemma-opt { padding: 14px 18px; font-size: 1rem; }
+      .memory-grid { grid-template-columns: repeat(4, 1fr); max-width: 640px; margin: 16px auto; gap: 14px; }
+      .mem-card { min-height: 130px; }
+      .dnd-categories { flex-direction: row; flex-wrap: wrap; }
+      .dnd-category { flex: 1 1 260px; }
+    }
+
+    /* ---- Tablets grandes / PC (901px en adelante) ---- */
+    @media (min-width: 901px) {
+      .screen.active { padding: 36px 40px; }
+      .game-body { max-width: 780px; }
+      .island-map-wrap { max-width: 900px; }
+      .feedback-card { max-width: 560px; }
+      .question-card, .tf-card, .dilemma-card, .protocol-card, .semaforo-scenario { padding: 26px 30px; }
+      .btn-main:hover, .btn-secondary:hover, .option-btn:hover:not(:disabled),
+      .dilemma-opt:hover:not(:disabled), .dnd-check-btn:hover, .btn-continue:hover {
+        cursor: pointer;
+      }
+    }
+
+    /* ---- Pantallas de escritorio muy anchas (≥ 1200px) ---- */
+    @media (min-width: 1200px) {
+      .screen.active { max-width: 1100px; margin: 0 auto; }
+    }
+
+    /* ---- Dispositivos táctiles: objetivos de toque más grandes ---- */
+    @media (pointer: coarse) {
+      .btn-main, .btn-secondary, .btn-continue, .dnd-check-btn { min-height: 46px; }
+      .option-btn, .dilemma-opt, .tf-btn, .sem-btn { min-height: 44px; }
+      .btn-back, .btn-reset-progress { min-height: 36px; }
+    }
+
+    /* ---- Accesibilidad: respeta si el usuario prefiere menos movimiento ---- */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
