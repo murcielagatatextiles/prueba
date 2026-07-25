@@ -46,7 +46,7 @@ const ZONES = [
 // Sonidos de acción generados con Web Audio API (sin archivos externos)
 // + control del audio de pirata (audio-pirata en el HTML).
 const pirateAudio = document.getElementById('audio-pirata');
-const PIRATE_SCREENS = ['screen-intro', 'screen-final', 'screen-participacion', 'screen-credits'];
+const PIRATE_SCREENS = ['screen-intro', 'screen-map', 'screen-final', 'screen-participacion', 'screen-credits'];
 
 let soundEnabled = (localStorage.getItem('cdSoundEnabled') !== '0');
 let audioCtx = null;
@@ -99,6 +99,11 @@ function playUnlock() {
   playTone(880, 0.2, 'triangle', 0.27, 0.14);
 }
 
+function playPlace() {
+  playTone(300, 0.05, 'sine', 0, 0.1);
+  playTone(440, 0.06, 'sine', 0.04, 0.1);
+}
+
 function playFanfare() {
   playTone(523, 0.15, 'triangle', 0, 0.15);
   playTone(659, 0.15, 'triangle', 0.14, 0.15);
@@ -109,7 +114,9 @@ function playFanfare() {
 function playPirate() {
   if (!soundEnabled || !pirateAudio) return;
   pirateAudio.volume = 0.35;
-  pirateAudio.play().catch(() => {}); // el navegador puede bloquear hasta el primer toque
+  pirateAudio.play().catch((err) => {
+    console.warn('No se pudo reproducir sonidopirata.mp3. Verifica que el archivo esté subido al repositorio con ese nombre exacto.', err);
+  });
 }
 function stopPirate() {
   if (!pirateAudio) return;
@@ -1562,7 +1569,7 @@ function allowDrop(e) { e.preventDefault(); e.currentTarget.closest('.dnd-catego
 function dropTo(catId, e) {
   e.preventDefault();
   document.querySelectorAll('.dnd-category,.dnd-items-pool').forEach(el => el.classList.remove('drag-over'));
-  if (dragId) { dndPlaced[dragId] = catId; dragId = null; renderDnD(); }
+  if (dragId) { dndPlaced[dragId] = catId; dragId = null; renderDnD(); playPlace(); }
 }
 
 // Touch support
@@ -1582,9 +1589,11 @@ document.addEventListener('touchend', function(e) {
     const catId = catEl.id.replace('cat-','');
     dndPlaced[touchItem] = catId;
     renderDnD();
+    playPlace();
   } else if (poolEl) {
     dndPlaced[touchItem] = 'pool';
     renderDnD();
+    playPlace();
   } else {
     const el = document.getElementById('dnd-'+touchItem);
     if (el) el.style.opacity = '1';
@@ -1831,6 +1840,18 @@ function answerDilemma(idx) {
   showFeedback(isCorrect, d.article, typeLabels[opt.type] + ' ' + d.explanation, renderDilemma);
 }
 
+// =================== PRECARGA DE IMÁGENES (zonas 3 y 5) ===================
+// Estas imágenes se eligen al azar de un banco más grande, así que las
+// precargamos todas en segundo plano apenas abre el juego, para que al
+// llegar a esas zonas ya estén en la memoria del navegador y no demoren.
+function preloadGameImages() {
+  const urls = [
+    ...VF_QUESTIONS_POOL.map(q => q.image),
+    ...DILEMMAS_POOL.map(d => d.image)
+  ].filter(Boolean);
+  urls.forEach(src => { const img = new Image(); img.src = src; });
+}
+
 // =================== RESPONSIVE VIEWPORT FIX ===================
 // Corrige el problema del 100vh en navegadores móviles (la barra de
 // direcciones aparece/desaparece y "salta" el contenido). Guardamos la
@@ -1851,4 +1872,5 @@ document.addEventListener('DOMContentLoaded', () => {
   const icon = document.getElementById('sound-icon');
   if (icon) icon.textContent = soundEnabled ? '🔊' : '🔇';
   showScreen('screen-intro');
+  setTimeout(preloadGameImages, 600);
 });
