@@ -42,6 +42,112 @@ const ZONES = [
   }
 ];
 
+// =================== SOUND ===================
+// Sonidos de acción generados con Web Audio API (sin archivos externos)
+// + control del audio de pirata (audio-pirata en el HTML).
+const pirateAudio = document.getElementById('audio-pirata');
+const PIRATE_SCREENS = ['screen-intro', 'screen-final', 'screen-participacion', 'screen-credits'];
+
+let soundEnabled = (localStorage.getItem('cdSoundEnabled') !== '0');
+let audioCtx = null;
+
+function getAudioCtx() {
+  if (!audioCtx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    audioCtx = new AC();
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+// Toca un tono simple con un pequeño "envelope" para que no suene a clic seco.
+function playTone(freq, duration, type, delay, vol) {
+  if (!soundEnabled) return;
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const t0 = ctx.currentTime + (delay || 0);
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type || 'square';
+  osc.frequency.setValueAtTime(freq, t0);
+  gain.gain.setValueAtTime(0, t0);
+  gain.gain.linearRampToValueAtTime(vol || 0.15, t0 + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.001, t0 + duration);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(t0);
+  osc.stop(t0 + duration + 0.02);
+}
+
+function playClick() { playTone(520, 0.07, 'square', 0, 0.08); }
+
+function playCorrect() {
+  playTone(523, 0.11, 'triangle', 0, 0.14);
+  playTone(659, 0.11, 'triangle', 0.09, 0.14);
+  playTone(784, 0.16, 'triangle', 0.18, 0.14);
+}
+
+function playIncorrect() {
+  playTone(220, 0.18, 'square', 0, 0.12);
+  playTone(160, 0.22, 'square', 0.12, 0.12);
+}
+
+function playUnlock() {
+  playTone(392, 0.09, 'triangle', 0, 0.13);
+  playTone(523, 0.09, 'triangle', 0.09, 0.13);
+  playTone(659, 0.09, 'triangle', 0.18, 0.13);
+  playTone(880, 0.2, 'triangle', 0.27, 0.14);
+}
+
+function playFanfare() {
+  playTone(523, 0.15, 'triangle', 0, 0.15);
+  playTone(659, 0.15, 'triangle', 0.14, 0.15);
+  playTone(784, 0.15, 'triangle', 0.28, 0.15);
+  playTone(1047, 0.35, 'triangle', 0.42, 0.16);
+}
+
+function playPirate() {
+  if (!soundEnabled || !pirateAudio) return;
+  pirateAudio.volume = 0.35;
+  pirateAudio.play().catch(() => {}); // el navegador puede bloquear hasta el primer toque
+}
+function stopPirate() {
+  if (!pirateAudio) return;
+  pirateAudio.pause();
+}
+
+// Decide si el sonido de pirata debe sonar según la pantalla activa.
+function maybeAutoPirate() {
+  const active = document.querySelector('.screen.active');
+  if (active && PIRATE_SCREENS.includes(active.id)) {
+    playPirate();
+  } else {
+    stopPirate();
+  }
+}
+
+function toggleMute() {
+  soundEnabled = !soundEnabled;
+  localStorage.setItem('cdSoundEnabled', soundEnabled ? '1' : '0');
+  const icon = document.getElementById('sound-icon');
+  if (icon) icon.textContent = soundEnabled ? '🔊' : '🔇';
+  if (soundEnabled) {
+    getAudioCtx();
+    maybeAutoPirate();
+  } else {
+    stopPirate();
+  }
+}
+
+// Los navegadores bloquean el audio hasta el primer toque del usuario.
+// Este listener "desbloquea" el audio y da el clic genérico a cualquier botón.
+document.addEventListener('click', (e) => {
+  getAudioCtx();
+  if (soundEnabled && pirateAudio && pirateAudio.paused) maybeAutoPirate();
+  const btn = e.target.closest('button');
+  if (btn && btn.id !== 'sound-toggle') playClick();
+}, true);
+
 // =================== GAME STATE ===================
 let state = {
   completed: [],
@@ -80,6 +186,7 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
+  maybeAutoPirate();
 }
 
 function showMap() {
@@ -89,6 +196,7 @@ function showMap() {
 }
 
 function showFinal() {
+  playFanfare();
   const totalPossible = Object.keys(state.scores).reduce((acc, k) => acc + (state.scores[k].max || 0), 0);
   const totalEarned = Object.keys(state.scores).reduce((acc, k) => acc + (state.scores[k].earned || 0), 0);
   document.getElementById('final-score-display').textContent = totalEarned + ' / ' + totalPossible + ' puntos';
@@ -155,6 +263,29 @@ function showFinal() {
       }, 550);
     }, 300);
   });
+}
+
+// ── Acordeón de la escena "Cómo ser un ciudadano digital pro" ──
+function toggleAccordion(headerBtn) {
+  const item = headerBtn.closest('.accordion-item');
+  const body = item.querySelector('.accordion-body');
+  const wasOpen = item.classList.contains('open');
+
+  // Cierra los demás items del mismo acordeón (comportamiento de acordeón clásico)
+  item.parentElement.querySelectorAll('.accordion-item.open').forEach(openItem => {
+    if (openItem !== item) {
+      openItem.classList.remove('open');
+      openItem.querySelector('.accordion-body').style.maxHeight = null;
+    }
+  });
+
+  if (wasOpen) {
+    item.classList.remove('open');
+    body.style.maxHeight = null;
+  } else {
+    item.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
 }
 
 function restartGame() {
@@ -522,6 +653,7 @@ function showZoneDetail(idx) {
 // =================== FEEDBACK ===================
 let feedbackCallback = null;
 function showFeedback(isCorrect, article, explanation, cb, label) {
+  if (isCorrect) playCorrect(); else playIncorrect();
   const overlay = document.getElementById('feedback-overlay');
   document.getElementById('fb-icon').textContent = isCorrect ? '🎉' : '💡';
   const title = document.getElementById('fb-title');
@@ -572,6 +704,7 @@ function completeZone(maxScore) {
   if (!state.completed.includes(zone.id)) state.completed.push(zone.id);
   state.scores[zone.id] = { earned: state.gameScore, max: maxScore };
   saveState();
+  playUnlock();
 
   renderProtocol(zone);
 }
@@ -1715,5 +1848,7 @@ window.addEventListener('orientationchange', setRealViewportHeight);
 document.addEventListener('DOMContentLoaded', () => {
   setRealViewportHeight();
   loadState();
+  const icon = document.getElementById('sound-icon');
+  if (icon) icon.textContent = soundEnabled ? '🔊' : '🔇';
   showScreen('screen-intro');
 });

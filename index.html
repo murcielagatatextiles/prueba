@@ -222,8 +222,86 @@
       </div>
     </div>
 
+    <!-- BOTÓN → ESCENA CIUDADANO DIGITAL PRO -->
+    <div style="text-align:center; padding-bottom:10px;">
+      <button class="btn-main" onclick="showScreen('screen-participacion')">🗳️ Cómo ser un ciudadano digital pro</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== ESCENA: CIUDADANO DIGITAL PRO ===================== -->
+<section id="screen-participacion" class="screen" style="background: linear-gradient(180deg, #062541 0%, #0d4d7a 60%, #1a6ea8 100%); padding: 24px 20px;">
+  <div style="max-width:640px; width:100%;">
+
+    <div style="text-align:center; margin-bottom:22px;">
+      <div style="font-size:2.6rem; margin-bottom:8px">🗳️✨</div>
+      <h1 style="color:var(--yellow); font-size:1.9rem; text-shadow:2px 2px 0 rgba(0,0,0,0.4)">Cómo ser un ciudadano digital pro</h1>
+      <p style="color:var(--ocean-light); font-size:0.98rem; max-width:460px; margin:10px auto; line-height:1.6">Usar internet también es ejercer tu derecho a participar. Así se ve en la práctica:</p>
+    </div>
+
+    <!-- ACORDEÓN -->
+    <div class="accordion" style="margin-bottom:22px;">
+
+      <div class="accordion-item">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="accordion-header-left">🏘️ <strong>Espacios de Participación</strong></span>
+          <span class="accordion-chevron">▾</span>
+        </button>
+        <div class="accordion-body">
+          <p style="font-style:italic; color:#555; margin-bottom:10px;">Tu voz tiene un lugar donde organizarse</p>
+          <p>La Constitución te da el derecho a asociarte, reunirte y manifestarte libremente (<strong>CRE, Art. 66.13</strong>), y reconoce todas las formas en que la sociedad puede organizarse (<strong>CRE, Art. 96</strong>).</p>
+          <p>En la práctica: las Asambleas Ciudadanas Locales, los Consejos Barriales/Comunas/Recintos y las Organizaciones Sociales son esos espacios — físicos y también digitales (grupos de WhatsApp, redes de tu barrio, comunidades temáticas).</p>
+          <p style="background:#fef6dc; border-left:4px solid #f0b429; border-radius:0 8px 8px 0; padding:10px 12px; margin-top:10px;">💡 Sumarte a un grupo de tu comunidad o a una causa que te importa es ejercer un derecho, no solo "estar en un chat".</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="accordion-header-left">🤝 <strong>Instancias de Participación</strong></span>
+          <span class="accordion-chevron">▾</span>
+        </button>
+        <div class="accordion-body">
+          <p style="font-style:italic; color:#555; margin-bottom:10px;">Donde la ciudadanía y el Estado se encuentran</p>
+          <p>Son espacios mixtos donde la ciudadanía (asambleas, organizaciones) dialoga directamente con autoridades (alcaldes, prefectos, juntas parroquiales, ministerios) para construir juntos la gestión pública.</p>
+          <p>En la práctica: hoy muchas de estas instancias tienen canales digitales — consultas públicas, redes oficiales de tu GAD, buzones ciudadanos en línea.</p>
+          <p style="background:#cce7f9; border-left:4px solid #1a6ea8; border-radius:0 8px 8px 0; padding:10px 12px; margin-top:10px;">💡 Seguir o escribirle a un canal oficial de tu municipio para proponer algo también es participación ciudadana.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="accordion-header-left">🛠️ <strong>Mecanismos de Participación</strong></span>
+          <span class="accordion-chevron">▾</span>
+        </button>
+        <div class="accordion-body">
+          <p style="font-style:italic; color:#555; margin-bottom:10px;">Las herramientas concretas que tienes</p>
+          <p>El <strong>Art. 72 de la LOPC</strong> define los mecanismos con los que cuentas, individual o colectivamente, para participar de forma protagónica en la gestión pública en cualquier nivel de gobierno.</p>
+          <p>Los GAD los regulan mediante Ordenanzas (provincial/cantonal) o Resoluciones (parroquial).</p>
+          <p style="background:#d4edda; border-left:4px solid #3a8c4e; border-radius:0 8px 8px 0; padding:10px 12px; margin-top:10px;">💡 Infórmate sobre estos mecanismos en el sitio de tu GAD — son la vía formal para que una propuesta ciudadana se escuche.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CIERRE MOTIVACIONAL -->
+    <div style="background:rgba(255,255,255,0.07); border:1.5px solid rgba(255,255,255,0.2); border-radius:16px; padding:22px; margin-bottom:24px; text-align:center;">
+      <p style="color:rgba(255,255,255,0.9); font-size:1rem; line-height:1.6; max-width:460px; margin:0 auto;">🌟 Tu voz digital también construye comunidad. Infórmate, súmate, propone.</p>
+    </div>
+
+    <div style="text-align:center; padding-bottom:10px;">
+      <button class="btn-main" onclick="showScreen('screen-credits')">🧭 Conoce a los navegantes del barco</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== ESCENA: CRÉDITOS ===================== -->
+<section id="screen-credits" class="screen" style="background: linear-gradient(180deg, #062541 0%, #0d4d7a 60%, #1a6ea8 100%); padding: 24px 20px;">
+  <div style="max-width:640px; width:100%;">
+
     <!-- CRÉDITOS -->
-    <div style="background:rgba(255,255,255,0.07); border:1.5px solid rgba(255,255,255,0.2); border-radius:16px; padding:22px; margin-bottom:18px; text-align:center;">
+    <div style="background:rgba(255,255,255,0.07); border:1.5px solid rgba(255,255,255,0.2); border-radius:16px; padding:22px; margin-bottom:18px; text-align:center; margin-top:12px;">
       <h2 style="color:var(--yellow); font-family:'Fredoka One',cursive; font-size:1.25rem; margin-bottom:16px">✨ Creado por</h2>
       <div style="display:flex; flex-direction:column; gap:10px; max-width:340px; margin:0 auto;">
         <div style="display:flex; justify-content:space-between; gap:12px; text-align:left; background:rgba(255,255,255,0.06); border-radius:10px; padding:10px 14px;">

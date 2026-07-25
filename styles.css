@@ -637,6 +637,38 @@
     /* Score counter */
     .score-counter { background: rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 12px; font-size: 0.85rem; color: white; font-weight: 700; }
 
+    /* ====== ACCORDION (escena Ciudadano digital pro) ====== */
+    .accordion { display: flex; flex-direction: column; gap: 12px; }
+    .accordion-item { background: white; border-radius: 14px; overflow: hidden; }
+    .accordion-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: white;
+      border: none;
+      padding: 16px 18px;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      text-align: left;
+    }
+    .accordion-header-left { color: #0d4d7a; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+    .accordion-chevron { color: #0d4d7a; font-size: 1.1rem; transition: transform 0.25s ease; flex-shrink: 0; }
+    .accordion-item.open .accordion-chevron { transform: rotate(180deg); }
+    .accordion-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      padding: 0 18px;
+      font-size: 0.88rem;
+      color: #444;
+      line-height: 1.6;
+    }
+    .accordion-body p { margin: 0 0 10px; }
+    .accordion-body p:last-child { margin-bottom: 0; }
+    .accordion-item.open .accordion-body { padding: 4px 18px 18px; }
+
     /* ====== SHARE BUTTONS (pantalla final) ====== */
     .share-icons-row {
       display: flex;
