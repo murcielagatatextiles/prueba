@@ -43,11 +43,7 @@ const ZONES = [
 ];
 
 // =================== SOUND ===================
-// Sonidos de acción generados con Web Audio API (sin archivos externos)
-// + control del audio de pirata (audio-pirata en el HTML).
-const pirateAudio = document.getElementById('audio-pirata');
-const PIRATE_SCREENS = ['screen-intro', 'screen-map', 'screen-final', 'screen-participacion', 'screen-credits'];
-
+// Sonidos de acción generados con Web Audio API (sin archivos externos).
 let soundEnabled = (localStorage.getItem('cdSoundEnabled') !== '0');
 let audioCtx = null;
 
@@ -111,46 +107,18 @@ function playFanfare() {
   playTone(1047, 0.35, 'triangle', 0.42, 0.16);
 }
 
-function playPirate() {
-  if (!soundEnabled || !pirateAudio) return;
-  pirateAudio.volume = 0.35;
-  pirateAudio.play().catch((err) => {
-    console.warn('No se pudo reproducir sonidopirata.mp3. Verifica que el archivo esté subido al repositorio con ese nombre exacto.', err);
-  });
-}
-function stopPirate() {
-  if (!pirateAudio) return;
-  pirateAudio.pause();
-}
-
-// Decide si el sonido de pirata debe sonar según la pantalla activa.
-function maybeAutoPirate() {
-  const active = document.querySelector('.screen.active');
-  if (active && PIRATE_SCREENS.includes(active.id)) {
-    playPirate();
-  } else {
-    stopPirate();
-  }
-}
-
 function toggleMute() {
   soundEnabled = !soundEnabled;
   localStorage.setItem('cdSoundEnabled', soundEnabled ? '1' : '0');
   const icon = document.getElementById('sound-icon');
   if (icon) icon.textContent = soundEnabled ? '🔊' : '🔇';
-  if (soundEnabled) {
-    getAudioCtx();
-    maybeAutoPirate();
-  } else {
-    stopPirate();
-  }
+  if (soundEnabled) getAudioCtx();
 }
 
 // Los navegadores bloquean el audio hasta el primer toque del usuario.
 // Este listener "desbloquea" el audio y da el clic genérico a cualquier botón.
 document.addEventListener('click', (e) => {
   getAudioCtx();
-  if (soundEnabled && pirateAudio && pirateAudio.paused) maybeAutoPirate();
   const btn = e.target.closest('button');
   if (btn && btn.id !== 'sound-toggle') playClick();
 }, true);
@@ -193,7 +161,6 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
-  maybeAutoPirate();
 }
 
 function showMap() {

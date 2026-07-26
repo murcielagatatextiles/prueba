@@ -23,6 +23,11 @@
 </head>
 <body>
 
+<!-- ===================== SOUND TOGGLE ===================== -->
+<button id="sound-toggle" onclick="toggleMute()" title="Silenciar / activar sonido" aria-label="Silenciar o activar sonido">
+  <span id="sound-icon">🔊</span>
+</button>
+
 <!-- ===================== INTRO SCREEN ===================== -->
 <section id="screen-intro" class="screen active">
   <div class="intro-island">🏝️</div>
@@ -290,7 +295,22 @@
     </div>
 
     <div style="text-align:center; padding-bottom:10px;">
-      <button class="btn-main" onclick="showScreen('screen-credits')">🧭 Conoce a los navegantes del barco</button>
+      <p style="font-size:0.82rem; color:rgba(255,255,255,0.5); margin-bottom:14px">Comparte este logro con tu familia y docentes</p>
+      <div class="share-icons-row">
+        <button class="share-icon-btn share-whatsapp" onclick="shareToWhatsapp('final')" title="Compartir por WhatsApp" aria-label="Compartir por WhatsApp">
+          <img src="whatsapp.png" alt="WhatsApp" style="width:100%;height:100%;object-fit:cover">
+        </button>
+        <button class="share-icon-btn share-facebook" onclick="shareToFacebook('final')" title="Compartir en Facebook" aria-label="Compartir en Facebook">
+          <img src="facebook.png" alt="Facebook" style="width:100%;height:100%;object-fit:cover">
+        </button>
+        <button class="share-icon-btn share-copy" onclick="shareCopyLink('final')" title="Copiar enlace" aria-label="Copiar enlace">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/>
+            <path d="M14 11a5 5 0 0 0-7.07 0l-2.83 2.83a5 5 0 0 0 7.07 7.07L12.5 19.5"/>
+          </svg>
+        </button>
+      </div>
+      <button class="btn-main" onclick="showScreen('screen-credits')" style="margin-top:18px">Créditos</button>
     </div>
 
   </div>
@@ -325,21 +345,6 @@
     </div>
 
     <div style="text-align:center; padding-bottom:30px;">
-      <p style="font-size:0.82rem; color:rgba(255,255,255,0.5); margin-bottom:14px">Comparte este logro con tu familia y docentes</p>
-      <div class="share-icons-row">
-        <button class="share-icon-btn share-whatsapp" onclick="shareToWhatsapp('final')" title="Compartir por WhatsApp" aria-label="Compartir por WhatsApp">
-          <img src="whatsapp.png" alt="WhatsApp" style="width:100%;height:100%;object-fit:cover">
-        </button>
-        <button class="share-icon-btn share-facebook" onclick="shareToFacebook('final')" title="Compartir en Facebook" aria-label="Compartir en Facebook">
-          <img src="facebook.png" alt="Facebook" style="width:100%;height:100%;object-fit:cover">
-        </button>
-        <button class="share-icon-btn share-copy" onclick="shareCopyLink('final')" title="Copiar enlace" aria-label="Copiar enlace">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/>
-            <path d="M14 11a5 5 0 0 0-7.07 0l-2.83 2.83a5 5 0 0 0 7.07 7.07L12.5 19.5"/>
-          </svg>
-        </button>
-      </div>
       <button class="btn-main" onclick="restartGame()" style="margin-top:18px">Jugar de nuevo</button>
     </div>
 
