@@ -1241,7 +1241,7 @@ function renderSemaforo() {
         border-radius: 14px;
         padding: 16px 18px;
         box-shadow: 0 4px 18px rgba(0,0,0,0.10);
-        margin-bottom: 10px;
+        margin: 14px 0 10px;
       }
       .sem2-situation-label {
         font-size: 0.72rem;
@@ -1271,6 +1271,13 @@ function renderSemaforo() {
         <p>Lee la situación y elige el color que corresponde</p>
       </div>
 
+      <div class="sem2-counter">Situación ${semIdx + 1} de ${semScenarios.length}</div>
+
+      <div class="sem2-situation">
+        <div class="sem2-situation-label">🚦 ¿Cómo clasificas esta conducta?</div>
+        <div class="sem2-situation-text">${s.text}</div>
+      </div>
+
       <div class="sem2-cards">
         ${cards.map(c => `
           <div class="sem2-card" style="border-color:${c.border}" onclick="answerSemaforo('${c.color}')">
@@ -1284,13 +1291,6 @@ function renderSemaforo() {
             </div>
           </div>
         `).join('')}
-      </div>
-
-      <div class="sem2-counter">Situación ${semIdx + 1} de ${semScenarios.length}</div>
-
-      <div class="sem2-situation">
-        <div class="sem2-situation-label">🚦 ¿Cómo clasificas esta conducta?</div>
-        <div class="sem2-situation-text">${s.text}</div>
       </div>
     </div>
   `;
