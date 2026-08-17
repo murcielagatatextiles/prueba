@@ -7,6 +7,7 @@ const ZONES = [
     subtitle: "¿Quién eres en internet?",
     type: "memory",
     color: "#6c43b0",
+    video: "videos/zona1.mp4",
   },
   {
     id: 2,
@@ -15,6 +16,7 @@ const ZONES = [
     subtitle: "¿Cómo te relacionas digitalmente?",
     type: "semaforo",
     color: "#27ae60",
+    video: "videos/zona2.mp4",
   },
   {
     id: 3,
@@ -23,6 +25,7 @@ const ZONES = [
     subtitle: "¿Cómo navegas la información?",
     type: "verdaderofalso",
     color: "#1a6ea8",
+    video: "videos/zona3.mp4",
   },
   {
     id: 4,
@@ -31,6 +34,7 @@ const ZONES = [
     subtitle: "Tus derechos digitales",
     type: "draganddrop",
     color: "#e05a2b",
+    video: "videos/zona4.mp4",
   },
   {
     id: 5,
@@ -39,6 +43,7 @@ const ZONES = [
     subtitle: "Toma de decisiones",
     type: "final",
     color: "#c0392b",
+    video: "videos/zona5.mp4",
   }
 ];
 
@@ -664,6 +669,24 @@ function startZone(zone) {
 function addScore(pts) {
   state.gameScore += pts;
   document.getElementById('live-score').textContent = state.gameScore;
+}
+
+// =================== HOW TO PLAY MODAL ===================
+function openHowToPlay() {
+  const zone = state.currentZone;
+  if (!zone || !zone.video) return;
+  const video = document.getElementById('howto-video');
+  video.src = zone.video;
+  document.getElementById('howto-overlay').classList.add('show');
+  video.play().catch(() => {});
+}
+
+function closeHowToPlay() {
+  const video = document.getElementById('howto-video');
+  video.pause();
+  video.removeAttribute('src');
+  video.load();
+  document.getElementById('howto-overlay').classList.remove('show');
 }
 
 function completeZone(maxScore) {

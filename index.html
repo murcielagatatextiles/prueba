@@ -83,6 +83,7 @@
     <h2 id="game-zone-title"></h2>
     <div class="score-counter">⭐ <span id="live-score">0</span></div>
   </div>
+  <button class="btn-howto" id="btn-howto" onclick="openHowToPlay()">🎬 ¿Cómo jugar?</button>
   <div class="game-body" id="game-body">
     <!-- Game content injected here -->
   </div>
@@ -361,6 +362,17 @@
     <div class="feedback-article" id="fb-article"></div>
     <p class="feedback-explanation" id="fb-explanation"></p>
     <button class="btn-continue" onclick="closeFeedback()">Continuar →</button>
+  </div>
+</div>
+
+<!-- ===================== HOW TO PLAY MODAL ===================== -->
+<div class="howto-overlay" id="howto-overlay" onclick="if(event.target===this) closeHowToPlay()">
+  <div class="howto-card">
+    <div class="howto-header">
+      <span class="howto-title">🎬 ¿Cómo jugar?</span>
+      <button class="howto-close" onclick="closeHowToPlay()" aria-label="Cerrar">✕</button>
+    </div>
+    <video id="howto-video" class="howto-video" controls playsinline></video>
   </div>
 </div>
 
