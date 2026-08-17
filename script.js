@@ -655,6 +655,7 @@ function startZone(zone) {
   document.getElementById('game-zone-icon').textContent = zone.icon;
   document.getElementById('game-zone-title').textContent = zone.title;
   document.getElementById('live-score').textContent = '0';
+  document.getElementById('btn-howto').style.display = '';
   showScreen('screen-game');
 
   switch(zone.type) {
@@ -692,6 +693,7 @@ function closeHowToPlay() {
 function completeZone(maxScore) {
   const zone = state.currentZone;
   const pct = state.gameScore / maxScore;
+  document.getElementById('btn-howto').style.display = 'none';
 
   if (pct < 0.6) {
     renderRetry(zone, maxScore);
@@ -1602,6 +1604,7 @@ function checkDnD() {
   const score = Math.round((correct / dndItems.length) * 40);
   state.gameScore = score;
   document.getElementById('live-score').textContent = score;
+  document.getElementById('btn-howto').style.display = 'none';
 
   const body = document.getElementById('game-body');
   const lines = dndItems.map(i => {
